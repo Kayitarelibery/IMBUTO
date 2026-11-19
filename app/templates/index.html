@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>IMBUTO | Youth Opportunity Intelligence</title>
+     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <header>
+        <div class="logo">🌱 IMBUTO</div>
+        <p>Youth Opportunity Intelligence Platform</p>
+    </header>
+<main>
+    <section class="hero">
+        <div class="hero-consent">
+            <span class="tag">BUILD YOUR FUTURE</span>
+            <h1>Turn Your Ideas Into Opportunities.</h1>
+            <p>
+                Discover business opportunities, understand your local environment, and transform your skills into sustainable businesses.
+            </p>
+            <button onclick="explore()">
+                Explore Opportunities →
+            </button>
+        </div>
+    </section>
+    <section class="features">
+        <div class="section-heading">
+            <h2>Everything You Need to Start</h2>
+            <p>Practical tools to help you make smarter entrepreneurial decisions.</p>
+        </div>
+        <div class="feature-grid">
+            <div class="feature">
+                <span class="feature-icon">🔎</span>
+                <h3>Opportunity Explorer</h3>
+                <p>Discover business ideas based on your interests, skills, location, and available budget.</p>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📊</span>
+                <h3>Financial Simulators</h3>
+                <p>Estimate startuo costs, monthly expenses, revenue, and potential profitability.</p>  
+            </div>                 
+            <div class="feature">
+                <span class="feature-icon">🌍</span>
+                <h3>Environment Intelligence</h3>
+                <p>Explore local environmental conditions that may influence business opportunities.</p>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🎯</span>
+                <h3>Skills Matchers</h3>
+                <p>Connect your skills and intersts with realistic entrepreneurial opportunities.</p>
+            </div>
+        </div>
+    </section>
+</main>
+<footer>
+    <p>© 2026 IMBUTO | Growing Ideas. Creating Opportunities.</p>
+</footer>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>                                      
