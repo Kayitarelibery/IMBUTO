@@ -19,6 +19,9 @@
             <p>Tell us about yourself. IMBUTO will suggest business ideas based on your skills, interests and available resources.</p>
         </section>
         <section class="explorer-form">
+            {% if error %}
+            <p class="weather-error">{{ error }}</p>
+            {% endif %}
             <form action="/explore" method="POST">
                 <label for="location">Where are you located?</label>
                 <select id="location" name="location" required>
@@ -41,11 +44,50 @@
         {% if searched %}
         <section class="results">
             <h2>Your Opportunity Recommendations</h2>
+            <div class="filter-controls">
+                <input type="text" id="searchInput" placeholder="Search business opportunities...">
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="technology">Technology</option>
+                    <option value="agriculture">Agriculture</option>
+                    <option value="creative">Creative</option>
+                    <option value="fashion">Fashion</option>
+                    <option value="education">Education</option>
+                </select>
+                <select id="sortFilter">
+                    <option value="high">Highest score first</option>
+                    <option value="low">Lowest score first</option>
+                </select>
+            </div>            
             <p>Location: {{ location }} | Budget: {{ "{:,.0f}".format(budget) }} RWF</p>
-            {% if results %}
+            {% if weather %}
+                {% if weather.success %}
+                    <div class="weather-card">
+                        <h2>Weather in {{ weather.location }}</h2>
+                        <div class="weather-details">
+                            <div>
+                                <strong>{{ weather.temperature }}°C</strong>
+                                <p>Temperature</p>
+                            </div>
+                            <div>
+                                <strong>{{ weather.precipitation }} mm</strong>
+                                <p>Precipitation</p>
+                            </div>
+                            <div>
+                                <strong>{{ weather.wind_speed }} km/h</strong>
+                                <p>Wind speed</p>
+                            </div>
+                        </div>
+                        <small>Last updated: {{ weather.time }}</small>
+                    </div>
+                  {% else %}
+                    <p class="weather-error">{{ weather.error }}</p>
+                  {% endif %}
+                {% endif %}    
+                {% if results %}                     
                 <div class="feature-grid">
                     {% for item in results %}
-                    <article class="feature">
+                    <article class="feature" data-score="{{ item.score }}">
                         <span class="tag">{{ item.category }}</span>
                         <h3>{{ item.name }}</h3>
                         <p>{{ item.description }}</p>
@@ -53,7 +95,7 @@
                         <p><strong>IMBUTO Opportunity score:</strong> {{ item.score }}/100</p>
                         <p>Skills compatibility: {{ item.skills_score }}/35</p>
                         <p>Financial feasibility: {{ item.finance_score }}/25</p>
-                        <p>Local environment:Pending data integration</p>
+                        <p><strong>Local environment:</strong>{{ item.environment_score }}/15</p>
                         {% if item.matching_skills %}
                         <p><strong>Matching Skills:</strong> {{ item.matching_skills | join(", ") }}</p>
                         {% endif %}
@@ -69,5 +111,7 @@
     <footer>
         <p>© 2026 IMBUTO | Growing Ideas. Creating Opportunities.</p>
     </footer>            
-</body>    
+  
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>  
+</body>
 </html>    

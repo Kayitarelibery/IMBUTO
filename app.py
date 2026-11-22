@@ -1,3 +1,4 @@
+from weather_services.weather import get_weather
 from flask import Flask, render_template, request
 
 app = Flask(
@@ -5,6 +6,21 @@ app = Flask(
      template_folder="app/templates",
      static_folder="app/static"
 )
+def calculate_environment_score(opportunity, weather):
+    if not weather or not weather.get("success"):
+        return 0
+    category = opportunity.get("category", "").lower()
+    if category == "agriculture":
+        temperature = weather.get("temperature", 0)
+        precipitation = weather.get("precipitation", 0)
+        score = 15
+        if temperature < 15 or temperature > 35:
+            score -= 5
+        if precipitation > 10:
+            score -= 3
+        return max(0, min(score, 15))
+    return 15        
+
 OPPORTUNITIES = [
     {
         "name": "Digital Marketing Services",
@@ -54,12 +70,23 @@ def home():
 def explore():
     if request.method == "POST":
         location = request.form.get("location", "").strip()
-        skills = request.form.get("skills", "").lower()
-        interests = request.form.get("interests", "").lower()
+        skills = request.form.get("skills", "").strip().lower()
+        interests = request.form.get("interests", "").strip().lower()
         try:
             budget = float(request.form.get("budget", 0))
-        except ValueError:
-            budget = 0
+            if budget < 0:
+                raise ValueError
+        except (ValueError, TypeError):
+            return render_template(
+                "explore.html",
+                results=[],
+                location=location,
+                budget=0,
+                weather=None,
+                searched=False,
+                error="Please enter a valid, non-negative investment amount."
+            )
+        weather = get_weather(location)
         results = [] 
         for opportunity in OPPORTUNITIES:
             matching_skills = [
@@ -85,7 +112,9 @@ def explore():
                 finance_score = (
                     budget / minimum_budget
                 ) * 25 if minimum_budget > 0 else 0
-            environment_score = 0
+            environment_score = calculate_environment_score(
+                opportunity, weather
+            )
             total_score = (
                     skills_score
                     + interests_score
@@ -109,6 +138,7 @@ def explore():
             results=results,
             location=location,
             budget=budget,
+            weather=weather,
             searched=True
         )           
     return render_template(
@@ -116,6 +146,7 @@ def explore():
         results=[],
         location="",
         budget="",
+        weather=None,
         searched=False
     )                    
 if __name__ == "__main__":

@@ -224,3 +224,32 @@ footer{
 .explorer-button:hover{
     background: #f5d47c;
 }
+.weather-card{
+    background: #f0f8f2;
+    border: 1px solid #cce5d2;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 25px 0;
+}
+.weather-details{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+}
+.weather-details strong{
+    font-size: 22px;
+    color: #176b3a;
+}
+.weather-details p{
+    margin-top: 5px;
+}
+.weather-error{
+    color: #b42318;
+    margin: 20px 0;
+}
+@media (max-width: 600px){
+    .weather-details{
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
