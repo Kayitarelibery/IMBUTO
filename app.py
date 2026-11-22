@@ -8,7 +8,7 @@ app = Flask(
 )
 def calculate_environment_score(opportunity, weather):
     if not weather or not weather.get("success"):
-        return 0
+        return None
     category = opportunity.get("category", "").lower()
     if category == "agriculture":
         temperature = weather.get("temperature", 0)
@@ -19,7 +19,7 @@ def calculate_environment_score(opportunity, weather):
         if precipitation > 10:
             score -= 3
         return max(0, min(score, 15))
-    return 15        
+    return 15
 
 OPPORTUNITIES = [
     {
@@ -87,7 +87,7 @@ def explore():
                 error="Please enter a valid, non-negative investment amount."
             )
         weather = get_weather(location)
-        results = [] 
+        results = []
         for opportunity in OPPORTUNITIES:
             matching_skills = [
                 skill for skill in opportunity.get("skills", [])
@@ -115,7 +115,11 @@ def explore():
             environment_score = calculate_environment_score(
                 opportunity, weather
             )
-            total_score = (
+            if environment_score is None:
+                available_score = skills_score + interests_score + finance_score
+                total_score = (available_score / 85) * 100
+            else:
+                total_score = (
                     skills_score
                     + interests_score
                     + finance_score
@@ -128,10 +132,14 @@ def explore():
                     "skills_score": round(skills_score),
                     "interests_score": round(interests_score),
                     "finance_score": round(finance_score),
-                    "environment_score": round(environment_score),
+                    "environment_score": (
+                        round(environment_score)
+                        if environment_score is not None
+                        else None
+                                ),
                     "matching_skills": matching_skills,
                     "matching_interests": matching_interests
-                })        
+                })
         results.sort(key=lambda item: item["score"], reverse=True)
         return render_template(
             "explore.html",
@@ -140,7 +148,7 @@ def explore():
             budget=budget,
             weather=weather,
             searched=True
-        )           
+        )
     return render_template(
         "explore.html",
         results=[],
@@ -148,6 +156,6 @@ def explore():
         budget="",
         weather=None,
         searched=False
-    )                    
+    )
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
