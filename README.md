@@ -218,3 +218,4 @@ IMBUTO aims to empower young people in Rwanda with accessible information and pr
 **Project:** IMBUTO – Youth Opportunity Intelligence Platform  
 **Repository:** https://github.com/Kayitarelibery/IMBUTO.git  
 **Live Website:** https://liberytech.tech
+**Demo Video:** https://youtu.be/ENpWTtUw9WI
